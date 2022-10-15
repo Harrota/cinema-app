@@ -6,6 +6,7 @@ import org.dsyromiatnikov.base.AbstractEntity;
 import org.dsyromiatnikov.order.Order;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -15,7 +16,7 @@ public class Movie extends AbstractEntity {
 
     private String name;
     private String description;
-    private String releaseDate;
+    private LocalDate releaseDate;
 
     @ManyToOne
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "FK_MOVIES_ORDER_ID"))
