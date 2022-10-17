@@ -5,8 +5,11 @@ import lombok.Setter;
 import org.dsyromiatnikov.base.AbstractEntity;
 import org.dsyromiatnikov.order.Order;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,7 +21,6 @@ public class Movie extends AbstractEntity {
     private String description;
     private LocalDate releaseDate;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "FK_MOVIES_ORDER_ID"))
-    private Order order;
+    @ManyToMany(mappedBy = "movies")
+    private List<Order> orders;
 }

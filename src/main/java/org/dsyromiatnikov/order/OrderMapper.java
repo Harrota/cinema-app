@@ -1,28 +1,30 @@
 package org.dsyromiatnikov.order;
 
-import lombok.Setter;
 import org.dsyromiatnikov.movie.Movie;
 import org.dsyromiatnikov.movie.MovieDto;
 import org.dsyromiatnikov.movie.MovieMapper;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-@Setter(onMethod_ = { @Autowired })
 public class OrderMapper {
 
-    private MovieMapper movieMapper;
+private final MovieMapper movieMapper;
+
+    public OrderMapper(@Lazy MovieMapper movieMapper) {
+        this.movieMapper = movieMapper;
+    }
 
     public OrderDto map (Order order) {
         OrderDto dto = new OrderDto();
         BeanUtils.copyProperties(order, dto, "movies");
 
         List<MovieDto> movies = order.getMovies()
-                .stream().map(movieMapper::map).collect(Collectors.toList());
+                .stream().map(movieMapper::mapWithoutChild).collect(Collectors.toList());
         dto.setMovies(movies);
 
         return dto;
@@ -30,7 +32,7 @@ public class OrderMapper {
 
     public Order map (OrderDto dto) {
         Order order = new Order();
-        BeanUtils.copyProperties(dto, order, "id", "movies");
+        BeanUtils.copyProperties(dto, order, "movies");
 
         List<Movie> movies = dto.getMovies()
                 .stream().map(movieMapper::map).collect(Collectors.toList());
@@ -38,4 +40,11 @@ public class OrderMapper {
 
         return order;
     }
+
+    public OrderDto mapWithoutChild(Order order) {
+        OrderDto dto = new OrderDto();
+        BeanUtils.copyProperties(order, dto, "movies");
+        return dto;
+    }
+
 }

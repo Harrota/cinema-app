@@ -15,8 +15,8 @@
             </column>
             <column name="description" type="varchar(128)"/>
             <column name="release_date" type="date"/>
-            <column name="order_id" type="bigint"/>
         </createTable>
+
         <createTable tableName="orders">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="orders_pk"/>
@@ -26,11 +26,24 @@
             <column name="date_created" type="date"/>
         </createTable>
 
-        <addForeignKeyConstraint baseTableName="movies"
-                                 baseColumnNames="order_id"
-                                 constraintName="FK_MOVIES_ORDER_ID"
-                                 referencedTableName="orders"
-                                 referencedColumnNames="ID"/>
+        <createTable tableName="orders_movies">
+            <column name="order_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="movie_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="order_id, movie_id" tableName="orders_movies"/>
+
+        <addForeignKeyConstraint baseColumnNames="order_id" baseTableName="orders_movies"
+                                 constraintName="FK_order_order_id" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="movies"/>
+
+        <addForeignKeyConstraint baseColumnNames="movie_id" baseTableName="orders_movies"
+                                 constraintName="FK_order_movie_id" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="orders"/>
     </changeSet>
 
 

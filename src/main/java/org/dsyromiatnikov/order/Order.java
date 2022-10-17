@@ -5,10 +5,7 @@ import lombok.Setter;
 import org.dsyromiatnikov.base.AbstractEntity;
 import org.dsyromiatnikov.movie.Movie;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +20,17 @@ public class Order extends AbstractEntity {
     private String description;
     private LocalDate dateCreated;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany(cascade =
+            {
+                    CascadeType.DETACH,
+                    CascadeType.MERGE,
+                    CascadeType.REFRESH,
+                    CascadeType.PERSIST
+            })
+    @JoinTable(name = "orders_movies",
+            joinColumns = {
+                    @JoinColumn(name = "movie_id") },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "order_id") })
     private List<Movie> movies = new ArrayList<>();
 }
